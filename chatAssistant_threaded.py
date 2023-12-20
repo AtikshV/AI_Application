@@ -21,6 +21,10 @@ import speech_recognition as sr
 from transformers import pipeline
 import numpy as np 
 
+import multiprocessing
+import time
+
+
 
 
 
@@ -48,17 +52,27 @@ You are a chatbot designed to start the conversation, and always keep it going. 
 
 """
 
-def callback(recognizer, audio):
-    # received audio data, now we'll recognize it using Google Speech Recognition
-    try:
-        # for testing purposes, we're just using the default API key
-        # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
-        # instead of `r.recognize_google(audio)`
-        print("Google Speech Recognition thinks you said " + recognizer.recognize_google(audio))
-    except sr.UnknownValueError:
-        print("Google Speech Recognition could not understand audio")
-    except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+def speak(): 
+    playsound("chatGPT.mp3")
+
+def threadedSpeech():
+    if __name__ == "__main__": 
+        p = multiprocessing.Process(target=speak)
+        p.start()
+
+
+        while p.is_alive(): 
+            print("Entered Loop...")
+            time.sleep(10); 
+            with sr.Microphone() as source:
+                audio_data = r.listen(source)
+                text = r.recognize_google(audio_data)
+            
+            if(text == "stop"):
+                print("Terminating...")
+                p.terminate()
+        
+        p.join()
 
 
 # def CustomChatGPT(user_input, history):
@@ -98,7 +112,7 @@ while(True):
         tts = gtts.gTTS(ChatGPT_reply)
         tts.save("chatGPT.mp3")
         print(ChatGPT_reply)
-        playsound("chatGPT.mp3")
+        threadedSpeech()
     except:
         print("silence...")
     # return ChatGPT_reply
