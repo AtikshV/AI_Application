@@ -3,7 +3,7 @@ from flask_cors import CORS
 import uuid
 import openai
 import gradio
-import config
+# import config
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain.llms import OpenAI 
 from langchain.chat_models import ChatOpenAI
@@ -26,8 +26,10 @@ import numpy as np
 
 import multiprocessing
 import time
+import os
 
-openai.api_key = config.MYAPIKEY
+# openai.api_key = config.MYAPIKEY
+os.environ("MYAPIKEY")
 
 messages = [
     {"role": "system", "content": "You are my very good friend. You must always keep the conversation going, share your experiences and asking followup questions from our discussion. Your responses should be as if humans are discussing and short as possible. Please start the conversation with a greeting and as if we met not so long ago "}
